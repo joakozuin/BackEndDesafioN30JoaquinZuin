@@ -4,6 +4,10 @@ import morgan from 'morgan'
 import cluster from 'cluster'
 import os from 'os'
 
+import dotenv from 'dotenv';
+dotenv.config();
+
+
 /**💡routes */
 import indexRoutes from "./src/routes/indexRoutes.cjs";
 
@@ -17,19 +21,16 @@ app.use("/", indexRoutes);
 const PORT = parseInt(process.argv[2]) || 8080;
 const numProc = os.cpus().length
 
-const modo=process.argv[3]
-
 console.log('Proceso')
 console.log(process.argv)
 console.log(typeof(modo))
 
+const MODO=process.argv[3]==='CLUSTER'
 
-if (modo == "CLUSTER") {
-
-  if (cluster.isMaster) {
+  if (MODO && cluster.isMaster) {
     console.log(`🔥​Master ${process.pid} se está ejecutando`);
 
-    for (let i = 0; i < os.cpus().length; i++) {
+    for (let i = 0; i < numProc; i++) {
       cluster.fork();
     }
     //💡Aca queda escuchando es un evento, cuando muere un proceso, este
@@ -49,16 +50,5 @@ if (modo == "CLUSTER") {
     server.on(`error`, (err) => console.log(err));
   }
 
-} else {
-
-  const server = app.listen(PORT, () =>
-    console.log(
-      `​🚀 ​ Servidor ejecutando en Modo Fork http://localhost:${PORT}-PID:${
-        process.pid
-      }-Hora:${new Date().toLocaleString()} `
-    )
-  );
-  server.on(`error`, (err) => console.log(err));
-}
 
 

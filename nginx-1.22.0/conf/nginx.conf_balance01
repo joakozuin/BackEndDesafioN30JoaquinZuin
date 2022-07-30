@@ -6,15 +6,13 @@ http {
     default_type  application/octet-stream;
 
     upstream appRandom {
-        server 127.0.0.1:8081;
-    
+        server 127.0.0.1:8082;
+        server 127.0.0.1:8083;
+        server 127.0.0.1:8084;
+        server 127.0.0.1:8085;
     }
 
-    upstream appResto {
-        server 127.0.0.1:8080;
-        
-    }
-    
+       
     server {
         listen       80;
         server_name  nginx_node;
@@ -25,14 +23,4 @@ http {
         }
     }
 
-
-    server {
-        listen       80;
-        #server_name  nginx_node;
-        #root       ../NginxNode/public;
-
-        location /info {
-            proxy_pass http://appResto/;
-        }
-    }
 }
